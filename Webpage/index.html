@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        header{
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>IoT Firebase dashboard</h1>
+    </header>
+
+    <!--First panel-->
+    <div class="panel 1">
+        <!--button to toggle-->
+        <div class="toggle">
+            <h3>Toggle</h3>
+            <label class="switch">
+                <input type="checkbox" id="button">
+                <span class="slider round"></span>
+            </label>
+            <div id='buttonval'></div>
+        </div>
+        <!--slider to adjust-->
+        <div class="slider">
+            <h3>Adjust</h3>
+            <input type="range" id="slidervalue" name="slidervalue" min="0" max="1023">
+            <div id='sliderval'></div>
+        </div>
+        <!--Gauge to show readings-->
+        <div class="gauge">
+            <h3>Reading</h3>
+            <div class="value"></div>
+            <meter id="value" value="2" min="0" max="10"></meter><br>
+        </div>
+    </div>
+    <footer>
+        <p>A contribution to the Robotics Society - KGEC</p>
+    </footer>
+
+
+
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="/__/firebase/8.3.3/firebase-app.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="/__/firebase/8.3.3/firebase-analytics.js"></script>
+    <!-- Initialize Firebase -->
+    <script src="/__/firebase/init.js"></script>
+</body>
+</html>
