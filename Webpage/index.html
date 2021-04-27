@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://github.githubassets.com/favicons/favicon-dark.png">
     <title>Firebase-IoT-Dashboard</title>
+    <link rel="icon" href="https://github.githubassets.com/favicons/favicon-dark.png">
+    
+    <!------------------------Styling------------------------->
     <style>
         body{
             font-family: sans-serif;
@@ -60,13 +62,18 @@
             grid-column-start: 3;
             grid-column-end: 6;
         }
-        .state .statebox{
-            height:40px;
+        .state #statebox{
             width: 100px;
             border: 1px solid #535353;
             border-radius: 10px;
             margin: 0 auto;
         }
+        #statebox {
+            padding: 10px;
+            color: #fff;
+            background-color: #67bd5f;
+        }
+
         @media only screen and (max-width: 845px) {
             body {
                 grid-gap: 4.5vh;
@@ -78,8 +85,10 @@
 
         }
     </style>
+    <!------------------------Styling------------------------->
 </head>
 <body>
+    <!------------------------Page Layout Content------------------------->
     <header>
         <h1>IoT Firebase dashboard</h1>
     </header>
@@ -105,18 +114,63 @@
         <div class="gauge">
             <h3>Reading</h3>
             <div class="value"></div>
-            <meter id="rangeval" value="2" min="0" max="10"></meter><br>
+            <meter id="rangeval" value="" min="0" max="1023"></meter><br>
         </div>
         <div class="state">
             <h3>State</h3>
-            <div class="statebox"></div>
+            <div id="statebox">True</div>
         </div>
     </div>
+
     <footer>
         <p>A contribution to the Robotics Society - KGEC</p>
     </footer>
+    <!------------------------Page Layout Content------------------------->
 
 
+
+    <!------------------------Scripting------------------------->
+    <script>
+        // The output objects
+        const button = document.getElementById("button");
+        const slider = document.getElementById("slidervalue");
+
+        //  Objects to display the value
+        const outputSlider = document.getElementById("sliderval");
+        const outputSwitch = document.getElementById("buttonval");
+        const outputGauge  = document.getElementById("rangeval");
+        const outputState  = document.getElementById("statebox");
+
+        //  When the HTML body loads for the first time
+        document.body.onload = () => {
+            outputSlider.innerHTML = slider.value; // Display the default slider value
+            outputSwitch.innerHTML = button.checked ? "on" : "off"; // Display the default button value
+            // Logic to receives/sends the results to the RTDB
+            setOutputState(button.checked)
+        }
+
+        // Update the current button value (each time you toggle the switch)
+        button.oninput = () => {
+            outputSwitch.innerHTML = button.checked ? "on" : "off";
+            setOutputState(button.checked)
+        }
+
+        // Update the current slider value (each time you drag the slider handle)
+        slider.oninput = () => {
+            outputSlider.innerHTML = slider.value;
+        }
+
+
+        /*======Functions=======*/
+        function setOutputState(state_value){
+            outputState.innerHTML = state_value;
+            if (state_value)
+                outputState.style.backgroundColor = "#67bd5f";
+            else
+                outputState.style.backgroundColor = "#606164";
+        }
+    </script>
+    <!------------------------Scripting------------------------->
 
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
