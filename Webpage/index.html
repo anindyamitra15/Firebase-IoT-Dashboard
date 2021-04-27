@@ -6,9 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        header{
-            align-items: center;
+        body{
+            font-family: sans-serif;
+            text-align: center;
+            background-color: #d8d8d8;
         }
+        header, footer{
+            width: 100%;
+            position: fixed;        
+            background: #5cc0fa;
+            /* padding: 1px 0; */
+            color: #fff;
+        }
+        header{
+            top: 0;
+        }
+        footer{
+            bottom: 0;
+        }
+        .panel{
+            width: 80vw;
+            border: 1px solid #000;
+            border-radius: 30px;
+            background-color: #ffffff;
+            margin: 20% auto;
+            display: grid;
+            grid-auto-flow: column;
+            grid-gap: 20px;
+            padding: 2% 2% 9% 2%;
+        }
+        .toggle{
+            grid-column-start: 1;
+            grid-column-end: 3;
+        }
+        .slider{
+            grid-column-start: 3;
+            grid-column-end: 6;
+        }
+        .gauge{
+            grid-column-start: 1;
+            grid-column-end: 3;
+        }
+        .state{
+            grid-column-start: 3;
+            grid-column-end: 6;
+        }
+        .state .statebox{
+            height:40%;
+            width: 30%;
+            border: 1px solid #535353;
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+        
     </style>
 </head>
 <body>
@@ -37,7 +87,11 @@
         <div class="gauge">
             <h3>Reading</h3>
             <div class="value"></div>
-            <meter id="value" value="2" min="0" max="10"></meter><br>
+            <meter id="rangeval" value="2" min="0" max="10"></meter><br>
+        </div>
+        <div class="state">
+            <h3>State</h3>
+            <div class="statebox"></div>
         </div>
     </div>
     <footer>
