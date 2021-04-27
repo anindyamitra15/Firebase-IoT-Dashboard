@@ -4,36 +4,45 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="icon" href="https://github.githubassets.com/favicons/favicon-dark.png">
+    <title>Firebase-IoT-Dashboard</title>
     <style>
         body{
             font-family: sans-serif;
             text-align: center;
             background-color: #d8d8d8;
+            box-sizing: border-box;
+            margin: 0;
+            display:grid;
+            grid-gap: 9vh;
         }
         header, footer{
-            width: 100%;
-            position: fixed;        
+            /*width: 100vw;*/       
             background: #5cc0fa;
-            /* padding: 1px 0; */
+            padding: 1px 0;
             color: #fff;
+
         }
-        header{
-            top: 0;
+        header {
+            grid-row-start: 1;
+            grid-row-end: 3;
         }
-        footer{
-            bottom: 0;
+        footer {
+            grid-row-start: 7;
+            grid-row-end: 9;
         }
         .panel{
-            width: 80vw;
+            width: 70vw;
             border: 1px solid #000;
             border-radius: 30px;
             background-color: #ffffff;
-            margin: 20% auto;
+            margin: auto;
             display: grid;
             grid-auto-flow: column;
             grid-gap: 20px;
-            padding: 2% 2% 9% 2%;
+            padding: 2vh 2vw 9vh 2vw;
+            grid-row-start: 4;
+            grid-row-end: 6;
         }
         .toggle{
             grid-column-start: 1;
@@ -52,13 +61,22 @@
             grid-column-end: 6;
         }
         .state .statebox{
-            height:40%;
-            width: 30%;
+            height:40px;
+            width: 100px;
             border: 1px solid #535353;
             border-radius: 10px;
             margin: 0 auto;
         }
-        
+        @media only screen and (max-width: 845px) {
+            body {
+                grid-gap: 4.5vh;
+            }
+            .panel{
+                display: block;
+                padding: 0 0 40px 0;
+            }
+
+        }
     </style>
 </head>
 <body>
