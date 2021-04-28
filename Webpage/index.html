@@ -6,17 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Firebase-IoT-Dashboard</title>
     <link rel="icon" href="https://github.githubassets.com/favicons/favicon-dark.png">
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/8.4.2/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.4.2/firebase-database.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+    <!-- firebase.database().ref('/path/to/ref').on('value', snapshot => { }); -->
     
     <!------------------------Styling------------------------->
     <style>
         body{
+            height: 100vh;
             font-family: sans-serif;
+            font-size: 110%;
             text-align: center;
             background-color: #d8d8d8;
             box-sizing: border-box;
             margin: 0;
             display:grid;
-            grid-gap: 9vh;
+            grid-gap: 8vh;
         }
         header, footer{
             /*width: 100vw;*/       
@@ -46,23 +56,23 @@
             grid-row-start: 4;
             grid-row-end: 6;
         }
-        .toggle{
+        .toggle {
             grid-column-start: 1;
             grid-column-end: 3;
         }
-        .slider{
+        .slider {
             grid-column-start: 3;
             grid-column-end: 6;
         }
-        .gauge{
+        .gauge {
             grid-column-start: 1;
             grid-column-end: 3;
         }
-        .state{
+        .state {
             grid-column-start: 3;
             grid-column-end: 6;
         }
-        .state #statebox{
+        .state #statebox {
             width: 100px;
             border: 1px solid #535353;
             border-radius: 10px;
@@ -74,24 +84,94 @@
             background-color: #67bd5f;
         }
 
+        /*======Styling required for toggle switch======*/
+        /* The switch - the box around the slider */
+        .toggle .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .toggle .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The key */
+        .toggle .key {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .toggle .key:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .toggle input:checked + .key {
+            background-color: #2196F3;
+        }
+
+        .toggle input:focus + .key {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        .toggle input:checked + .key:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .toggle .key.round {
+            border-radius: 34px;
+        }
+
+        .toggle .key.round:before {
+            border-radius: 50%;
+        }
+        /*======Styling required for toggle switch======*/
+
+        /*========Just for responsiveness========*/
         @media only screen and (max-width: 845px) {
             body {
                 grid-gap: 4.5vh;
             }
-            .panel{
+            .panel {
                 display: block;
                 padding: 0 0 40px 0;
             }
-
         }
+        /*========Just for responsiveness========*/
     </style>
     <!------------------------Styling------------------------->
 </head>
+
+
 <body>
     <!------------------------Page Layout Content------------------------->
     <header>
         <h1>IoT Firebase dashboard</h1>
     </header>
+
+    <p id="connectionState">Connecting to server....!</p>
 
     <!--First panel-->
     <div class="panel 1">
@@ -100,7 +180,7 @@
             <h3>Toggle</h3>
             <label class="switch">
                 <input type="checkbox" id="button">
-                <span class="slider round"></span>
+                <span class="key round"></span>
             </label>
             <div id='buttonval'></div>
         </div>
@@ -114,7 +194,7 @@
         <div class="gauge">
             <h3>Reading</h3>
             <div class="value"></div>
-            <meter id="rangeval" value="" min="0" max="1023"></meter><br>
+            <meter id="rangeval" value="512" min="0" max="1023"></meter><br>
         </div>
         <div class="state">
             <h3>State</h3>
@@ -138,30 +218,12 @@
         //  Objects to display the value
         const outputSlider = document.getElementById("sliderval");
         const outputSwitch = document.getElementById("buttonval");
-        const outputGauge  = document.getElementById("rangeval");
-        const outputState  = document.getElementById("statebox");
-
-        //  When the HTML body loads for the first time
-        document.body.onload = () => {
-            outputSlider.innerHTML = slider.value; // Display the default slider value
-            outputSwitch.innerHTML = button.checked ? "on" : "off"; // Display the default button value
-            // Logic to receives/sends the results to the RTDB
-            setOutputState(button.checked)
-        }
-
-        // Update the current button value (each time you toggle the switch)
-        button.oninput = () => {
-            outputSwitch.innerHTML = button.checked ? "on" : "off";
-            setOutputState(button.checked)
-        }
-
-        // Update the current slider value (each time you drag the slider handle)
-        slider.oninput = () => {
-            outputSlider.innerHTML = slider.value;
-        }
+        const outputGauge = document.getElementById("rangeval");
+        const outputState = document.getElementById("statebox");
+        const connectionState = document.getElementById("connectionState");
 
 
-        /*======Functions=======*/
+        /*==================Functions===================*/
         function setOutputState(state_value){
             outputState.innerHTML = state_value;
             if (state_value)
@@ -169,16 +231,72 @@
             else
                 outputState.style.backgroundColor = "#606164";
         }
+        
+        /*===== Firebase =====*/
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log(firebase);
+            const database = firebase.database();
+
+            //  When the HTML body loads for the first time
+            document.body.onload = () => {
+                outputSlider.innerHTML = slider.value; // Display the default slider value
+                outputSwitch.innerHTML = button.checked ? "on" : "off"; // Display the default button value
+            }
+
+            // Update the current button value (each time you toggle the switch)
+            button.oninput = () => {
+                outputSwitch.innerHTML = button.checked ? "on" : "off";
+                setOutputState(button.checked)
+            }
+
+            // Update the current slider value (each time you drag the slider handle)
+            slider.oninput = () => {
+                outputSlider.innerHTML = slider.value;
+            }
+
+            //   flag
+            var firstLoad = true;
+
+            //   scale factor for range
+            //const scale = 10 / 1024;
+
+            updateView = (data) => {
+                setOutputState(data.D0);
+                outputGauge.value = data.A0;// * scale;
+            };
+
+            updateDatabase = () => {
+                //   console.log(slider.value);
+                var data = {
+                    level: slider.value,
+                    state: button.checked,
+                };
+                console.log(data);
+                console.log(database.ref("/devices/Keys").update(data));
+            };
+
+            removeConnectingMsg = () => {
+                connectionState.hidden = true;
+            };
+
+            // event listeners
+            button.addEventListener("change", (event) => updateDatabase());
+            slider.addEventListener("change", (event) => updateDatabase());
+
+            // database event listeners
+            const keysRef = database.ref("/devices/Inputs");
+                keysRef.on("value", (snap) => {
+                    const data = snap.val();
+                    console.log(data);
+                    if (firstLoad) {
+                        removeConnectingMsg();
+                        firstLoad = false;
+                    }
+                    updateView(data);
+                });
+            });
+        /*====================*/
     </script>
     <!------------------------Scripting------------------------->
-
-
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="/__/firebase/8.3.3/firebase-app.js"></script>
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-         https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="/__/firebase/8.3.3/firebase-analytics.js"></script>
-    <!-- Initialize Firebase -->
-    <script src="/__/firebase/init.js"></script>
 </body>
 </html>
