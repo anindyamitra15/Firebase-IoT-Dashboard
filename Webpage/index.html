@@ -44,6 +44,7 @@
             grid-row-end: 9;
         }
         .panel{
+            color: #474747;
             width: 70vw;
             border: 1px solid #000;
             border-radius: 30px;
@@ -52,9 +53,29 @@
             display: grid;
             grid-auto-flow: column;
             grid-gap: 20px;
-            padding: 2vh 2vw 9vh 2vw;
+            padding: 2vh 2vw;
             grid-row-start: 4;
             grid-row-end: 6;
+        }
+        .texts {
+            grid-column: 2 / span 3;
+        }
+        .panel .userPanel {
+            grid-row-start : 1;
+            grid-row-end : 3;
+            display: grid;
+            text-align: center;
+            border: 1px solid #000;
+            border-radius: 30px;
+            padding: 2%;
+        }
+        .panel .mcuPanel {
+            grid-row-start : 4;
+            grid-row-end : 6;
+            display: grid;
+            border: 1px solid #000;
+            border-radius: 30px;
+            padding: 2%;
         }
         .toggle {
             grid-column-start: 1;
@@ -74,7 +95,7 @@
         }
         .state #statebox {
             width: 100px;
-            border: 1px solid #535353;
+            border: 1px solid #a5a5a5;
             border-radius: 10px;
             margin: 0 auto;
         }
@@ -148,7 +169,14 @@
             border-radius: 50%;
         }
         /*======Styling required for toggle switch======*/
+        .gauge #gaugeMinVal, #gaugeMaxVal {
+            font-size: 75%;
+            display: inline;
+        }
 
+        #connectionState {
+            color: #474747;
+        }
         /*========Just for responsiveness========*/
         @media only screen and (max-width: 845px) {
             body {
@@ -175,30 +203,39 @@
 
     <!--First panel-->
     <div class="panel 1">
-        <!--button to toggle-->
-        <div class="toggle">
-            <h3>Toggle</h3>
-            <label class="switch">
-                <input type="checkbox" id="button">
-                <span class="key round"></span>
-            </label>
-            <div id='buttonval'></div>
+        <div class="userPanel">
+        <div class="texts">Control GPIOs</div>
+            <!--button to toggle-->
+            <div class="toggle">
+                <h3>Toggle</h3>
+                <label class="switch">
+                    <input type="checkbox" id="button">
+                    <span class="key round"></span>
+                </label>
+                <div id='buttonval'></div>
+            </div>
+            <!--slider to adjust-->
+            <div class="slider">
+                <h3>Adjust</h3>
+                <input type="range" id="slidervalue" name="slidervalue" min="0" max="1023">
+                <div id='sliderval'></div>
+            </div>
         </div>
-        <!--slider to adjust-->
-        <div class="slider">
-            <h3>Adjust</h3>
-            <input type="range" id="slidervalue" name="slidervalue" min="0" max="1023">
-            <div id='sliderval'></div>
-        </div>
-        <!--Gauge to show readings-->
-        <div class="gauge">
-            <h3>Reading</h3>
-            <div class="value"></div>
-            <meter id="rangeval" value="512" min="0" max="1023"></meter><br>
-        </div>
-        <div class="state">
-            <h3>State</h3>
-            <div id="statebox">True</div>
+        <div class="mcuPanel">
+            <div class="texts">Display Data</div>
+            <!--Gauge to show readings-->
+            <div class="gauge">
+                <h3>Reading</h3>
+                <div id="gaugeMinVal"></div>
+                <meter id="rangeval" value="512" min="0" max="1023"></meter>
+                <div id="gaugeMaxVal"></div>
+                <br>
+                <div id="gaugeReading"></div>
+            </div>
+            <div class="state">
+                <h3>State</h3>
+                <div id="statebox">True</div>
+            </div>
         </div>
     </div>
 
@@ -218,10 +255,14 @@
         //  Objects to display the value
         const outputSlider = document.getElementById("sliderval");
         const outputSwitch = document.getElementById("buttonval");
+
         const outputGauge = document.getElementById("rangeval");
+        const gaugeMinVal = document.getElementById("gaugeMinVal");
+        const gaugeMaxVal = document.getElementById("gaugeMaxVal");
+        const gaugeReading = document.getElementById("gaugeReading");
+
         const outputState = document.getElementById("statebox");
         const connectionState = document.getElementById("connectionState");
-
 
         /*==================Functions===================*/
         function setOutputState(state_value){
@@ -231,9 +272,10 @@
             else
                 outputState.style.backgroundColor = "#606164";
         }
-        
-        /*===== Firebase =====*/
+
+        /*===== Firebase Methods =====*/
         document.addEventListener("DOMContentLoaded", () => {
+            firebase.initializeApp(config);
             console.log(firebase);
             const database = firebase.database();
 
@@ -241,36 +283,37 @@
             document.body.onload = () => {
                 outputSlider.innerHTML = slider.value; // Display the default slider value
                 outputSwitch.innerHTML = button.checked ? "on" : "off"; // Display the default button value
-            }
-
-            // Update the current button value (each time you toggle the switch)
-            button.oninput = () => {
-                outputSwitch.innerHTML = button.checked ? "on" : "off";
-                setOutputState(button.checked)
-            }
-
-            // Update the current slider value (each time you drag the slider handle)
-            slider.oninput = () => {
-                outputSlider.innerHTML = slider.value;
+                gaugeMinVal.innerHTML = outputGauge.min;
+                gaugeMaxVal.innerHTML = outputGauge.max;
+                gaugeReading.value = outputGauge.value;
             }
 
             //   flag
             var firstLoad = true;
 
-            //   scale factor for range
-            //const scale = 10 / 1024;
-
             updateView = (data) => {
-                setOutputState(data.D0);
-                outputGauge.value = data.A0;// * scale;
+                // The State box
+                setOutputState(data.Inputs.D0);
+                // The Reading Gauge
+                outputGauge.value = data.Inputs.A0;
+                gaugeReading.value = outputGauge.value;
+                // The Toggle Switch
+                button.checked = data.Keys.state;
+                outputSwitch.innerHTML = button.checked ? "on" : "off";
+                // The Adjust Slider
+                slider.value = data.Keys.level;
+                outputSlider.innerHTML = slider.value;
             };
 
             updateDatabase = () => {
-                //   console.log(slider.value);
                 var data = {
-                    level: slider.value,
+                    level: Number(slider.value),
                     state: button.checked,
                 };
+                //  Show the state on the page
+                outputSwitch.innerHTML = button.checked ? "on" : "off";
+                //  Show the level on the page
+                outputSlider.innerHTML = slider.value;
                 console.log(data);
                 console.log(database.ref("/devices/Keys").update(data));
             };
@@ -282,9 +325,12 @@
             // event listeners
             button.addEventListener("change", (event) => updateDatabase());
             slider.addEventListener("change", (event) => updateDatabase());
+            slider.oninput = () => {
+                outputSlider.innerHTML = slider.value;
+            }
 
             // database event listeners
-            const keysRef = database.ref("/devices/Inputs");
+            const keysRef = database.ref("/devices");
                 keysRef.on("value", (snap) => {
                     const data = snap.val();
                     console.log(data);
