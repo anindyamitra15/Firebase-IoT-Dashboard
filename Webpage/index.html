@@ -20,27 +20,25 @@
         body{
             height: 100vh;
             font-family: sans-serif;
-            font-size: 110%;
+            font-size: 100%;
             text-align: center;
             background-color: #d8d8d8;
             box-sizing: border-box;
             margin: 0;
             display:grid;
-            grid-gap: 8vh;
         }
         header, footer{
             /*width: 100vw;*/       
             background: #5cc0fa;
-            padding: 1px 0;
             color: #fff;
 
         }
         header {
             grid-row-start: 1;
-            grid-row-end: 3;
+            grid-row-end: 2;
         }
         footer {
-            grid-row-start: 7;
+            grid-row-start: 8;
             grid-row-end: 9;
         }
         .panel{
@@ -53,29 +51,28 @@
             display: grid;
             grid-auto-flow: column;
             grid-gap: 20px;
-            padding: 2vh 2vw;
+            padding: 2vh 1.2vw;
             grid-row-start: 4;
             grid-row-end: 6;
         }
         .texts {
             grid-column: 2 / span 3;
         }
+        .panel .userPanel, .panel .mcuPanel {
+            border: 1px solid #000;
+            border-radius: 20px;
+            padding: 2%;
+        }
         .panel .userPanel {
             grid-row-start : 1;
             grid-row-end : 3;
             display: grid;
-            text-align: center;
-            border: 1px solid #000;
-            border-radius: 30px;
-            padding: 2%;
+            
         }
         .panel .mcuPanel {
-            grid-row-start : 4;
-            grid-row-end : 6;
+            grid-row-start : 3;
+            grid-row-end : 5;
             display: grid;
-            border: 1px solid #000;
-            border-radius: 30px;
-            padding: 2%;
         }
         .toggle {
             grid-column-start: 1;
@@ -104,7 +101,10 @@
             color: #fff;
             background-color: #67bd5f;
         }
-
+        #gaugeReading {
+            font-size: 75%;
+            text-align: center;
+        }
         /*======Styling required for toggle switch======*/
         /* The switch - the box around the slider */
         .toggle .switch {
@@ -176,15 +176,28 @@
 
         #connectionState {
             color: #474747;
+            z-index: 100;
         }
         /*========Just for responsiveness========*/
         @media only screen and (max-width: 845px) {
-            body {
-                grid-gap: 4.5vh;
+            h1 {
+                margin : 0.2em;
+                font-size: 180%;
+            }
+            p {
+                margin: 0.5em;
+                font-size: 75%;
             }
             .panel {
                 display: block;
-                padding: 0 0 40px 0;
+                padding: 10px;
+                width: 80vw;
+            }
+            .panel .userPanel, .panel .mcuPanel {
+                display: block;
+            }
+            .panel .userPanel {
+                margin-bottom: 10px;
             }
         }
         /*========Just for responsiveness========*/
@@ -204,10 +217,10 @@
     <!--First panel-->
     <div class="panel 1">
         <div class="userPanel">
-        <div class="texts">Control GPIOs</div>
+        <h3 class="texts">Control GPIOs</h3>
             <!--button to toggle-->
             <div class="toggle">
-                <h3>Toggle</h3>
+                <h4>Toggle</h4>
                 <label class="switch">
                     <input type="checkbox" id="button">
                     <span class="key round"></span>
@@ -216,16 +229,16 @@
             </div>
             <!--slider to adjust-->
             <div class="slider">
-                <h3>Adjust</h3>
+                <h4>Adjust</h4>
                 <input type="range" id="slidervalue" name="slidervalue" min="0" max="1023">
                 <div id='sliderval'></div>
             </div>
         </div>
         <div class="mcuPanel">
-            <div class="texts">Display Data</div>
+            <h3 class="texts">Display Data</h3>
             <!--Gauge to show readings-->
             <div class="gauge">
-                <h3>Reading</h3>
+                <h4>Reading</h4>
                 <div id="gaugeMinVal"></div>
                 <meter id="rangeval" value="512" min="0" max="1023"></meter>
                 <div id="gaugeMaxVal"></div>
@@ -233,7 +246,7 @@
                 <div id="gaugeReading"></div>
             </div>
             <div class="state">
-                <h3>State</h3>
+                <h4>State</h4>
                 <div id="statebox">True</div>
             </div>
         </div>
@@ -275,7 +288,6 @@
 
         /*===== Firebase Methods =====*/
         document.addEventListener("DOMContentLoaded", () => {
-            firebase.initializeApp(config);
             console.log(firebase);
             const database = firebase.database();
 
@@ -285,7 +297,8 @@
                 outputSwitch.innerHTML = button.checked ? "on" : "off"; // Display the default button value
                 gaugeMinVal.innerHTML = outputGauge.min;
                 gaugeMaxVal.innerHTML = outputGauge.max;
-                gaugeReading.value = outputGauge.value;
+                gaugeReading.innerHTML = outputGauge.value;
+                document.getElementsByClassName("panel").hidden = true;
             }
 
             //   flag
@@ -296,7 +309,7 @@
                 setOutputState(data.Inputs.D0);
                 // The Reading Gauge
                 outputGauge.value = data.Inputs.A0;
-                gaugeReading.value = outputGauge.value;
+                gaugeReading.innerHTML = outputGauge.value;
                 // The Toggle Switch
                 button.checked = data.Keys.state;
                 outputSwitch.innerHTML = button.checked ? "on" : "off";
@@ -320,6 +333,7 @@
 
             removeConnectingMsg = () => {
                 connectionState.hidden = true;
+                document.getElementsByClassName("panel").hidden = false;
             };
 
             // event listeners

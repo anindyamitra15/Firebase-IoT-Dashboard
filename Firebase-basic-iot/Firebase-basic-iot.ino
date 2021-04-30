@@ -15,6 +15,7 @@
 
 /*=== All the GPIO Pins ===*/
 #define LED 2
+#define OutputPin 5
 #define analogInput A0
 #define digitalInput 4
 
@@ -42,6 +43,7 @@ void setup()
   
 // Setting GPIO pins as Inputs/Outputs
   pinMode(LED, OUTPUT);
+  pinMode(OutputPin, OUTPUT);
   pinMode(analogInput, INPUT);
   pinMode(digitalInput, INPUT);
 
@@ -59,17 +61,17 @@ void setup()
   showDebugDataSchedule.setDelay(10000); // every 10 seconds
 
   inputHandler.setTicker(true);
-  inputHandler.setDelay(3000);
+  inputHandler.setDelay(1300);
   
   outputHandler.setTicker(true);
-  outputHandler.setDelay(2000);
+  outputHandler.setDelay(1200);
 }
 
 void loop()
 {
   showDebugDataSchedule.tick(showDebugData);//every 10 seconds
-  inputHandler.         tick( handleInput );// every 3 sec
-  outputHandler.        tick(handleOutput );// every 2 sec
+  inputHandler.         tick( handleInput );// every 1.3 sec
+  outputHandler.        tick(handleOutput );// every 1.2 sec
 }
 
 
@@ -179,5 +181,5 @@ void handleOutput(){
   }
   
   if(_isUpdated)
-    analogWrite(LED, state?level:0);
+    analogWrite(OutputPin, state?level:0);
 }
