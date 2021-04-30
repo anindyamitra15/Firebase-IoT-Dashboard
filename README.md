@@ -27,6 +27,18 @@ And paste the link: `https://arduino.esp8266.com/stable/package_esp8266com_index
 <br> Go to Tools -> Board -> Board Manager -> Search for `ESP8266` and Download that package <br>
 ![image](https://user-images.githubusercontent.com/55695557/105572665-8e530500-5d7e-11eb-88f6-ac3942e6513b.png) <br>
 
+### Firebase Part
+* We are using Firebase Realtime Database and Firebase Hosting services, those are available under the spark plan with certain limitations, but it won't be an issue for our purpose. <br>
+├── Realtime Database - To store the states and Values and communicate with the IoT device(s)<br>
+└── Firebase Hosting - Hosts an web app to interract with the realtime database<br>
+
+* Firebase Hosting:<br>
+├── Go to the `Webpage` Folder in this repository <br>
+└── The `index.html` contains basic html, styling, and the scripting to connect to the firebase database <br>
+* Firebase Realtime Database: <br>
+├── Realtime Database in Firebase is a big nested JSON which holds all the Key and Value pairs <br>
+└── The values can be changed both from the device and from the web page based on certain logic <br>
+
 ### Upload the code
 Keep the USB connected to NodeMCU to access the serial monitor in case you want to debug! <br>
 Type the URL from your Firebase Hosting page, if you did everything properly, you will see something like this: <br>
