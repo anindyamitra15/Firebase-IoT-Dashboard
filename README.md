@@ -33,7 +33,7 @@ It is very beginner friendly and can easily be implemented in firebase without k
 
 ## NodeMCU setup part:
 Go through this repository for all the instructions including the schematic diagrams.
-* Note: If you are working with NodeMCU on Arduino IDE for the first time, you may go ahead and take a look into [the NodeMCU setup instructions!](nodeMCU-Instructions.md)
+* Note: If you are working with NodeMCU on Arduino IDE for the first time, you may go ahead and take a look into [the NodeMCU setup instructions!](NodeMCU-Instructions.md)
 
 ### Here is a breadboard prototype diagram:
 ![fbdo_bb](https://user-images.githubusercontent.com/55695557/123997787-62ebda80-d9ee-11eb-983d-de0c9aa1787e.png)
