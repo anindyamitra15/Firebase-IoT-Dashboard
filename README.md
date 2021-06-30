@@ -22,7 +22,7 @@ It is very beginner friendly and can easily be implemented in firebase without k
 * We are using Firebase Realtime Database and Firebase Hosting services, those are available under the spark plan with certain limitations, but it won't be an issue for our purpose. <br>
 ├── Realtime Database - To store the states and Values and communicate with the IoT device(s)<br>
 └── Firebase Hosting - Hosts an web app to interact with the realtime database<br>
-* Detailed instructions about firebase integration are available [on this link!](./firebase-Instructions.md)<br>
+* Detailed instructions about firebase integration are available [on this page!](Firebase-Instructions.md)<br>
 
 * Firebase Hosting:<br>
 ├── Go to the `Webpage` folder in this repository <br>
@@ -33,7 +33,7 @@ It is very beginner friendly and can easily be implemented in firebase without k
 
 ## NodeMCU setup part:
 Go through this repository for all the instructions including the schematic diagrams.
-* Note: If you are working with NodeMCU on Arduino IDE for the first time, you may go ahead and take a look into [the NodeMCU setup instructions!](./nodeMCU-Instructions.md)
+* Note: If you are working with NodeMCU on Arduino IDE for the first time, you may go ahead and take a look into [the NodeMCU setup instructions!](nodeMCU-Instructions.md)
 
 ### Here is a breadboard prototype diagram:
 ![fbdo_bb](https://user-images.githubusercontent.com/55695557/123997787-62ebda80-d9ee-11eb-983d-de0c9aa1787e.png)
@@ -48,7 +48,7 @@ Put,<br>
 `#inlcude FIREBASE_HOST "PROJECT_ID.firebaseio.com"` and<br>
 `#include FIREBASE_AUTH "DATABASE_SECRET"`<br>
 inside `config.h`. 
-    1. You will find these credentials inside settings of your firebase [console page](https://console.firebase.google.com/) -> choose your firebase project -> Realtime Database -> Data copy the URL you see above the DB table, replace `PROJECT_ID.firebaseio.com` in the macro `FIREBASE_HOST` with that URL. Note that the URL may not end with `firebaseio.com`, as in this case, you can see it ends with `firebasedatabase.app`. <br><br>
+    1. You will find these credentials inside settings of your [firebase console page](https://console.firebase.google.com/) -> choose your firebase project -> Realtime Database -> Data copy the URL you see above the DB table, replace `PROJECT_ID.firebaseio.com` in the macro `FIREBASE_HOST` with that URL. Note that the URL may not end with `firebaseio.com`, as in this case, you can see it ends with `firebasedatabase.app`. <br><br>
     ![image](https://user-images.githubusercontent.com/55695557/123860094-18f9ea80-d943-11eb-82fa-7d2b492c1dbb.png)<br>
     2. And, ⚙ -> project settings -> Service accounts -> Database Secrets, click Show and then copy the database secret and replace it with `DATABASE_SECRET` in `config.h`<br><br>
     ![image](https://user-images.githubusercontent.com/55695557/123998821-7b102980-d9ef-11eb-92b1-2988dab53c97.png)
@@ -60,4 +60,4 @@ Type the URL from your Firebase Hosting page, if you did everything properly, yo
 ![image](https://user-images.githubusercontent.com/55695557/116693694-e7fd4800-a9db-11eb-90ce-ed2155b34553.png)
 * You have successfully hosted an webpage on firebase to control your IoT device using Firebase RTDB.
 
-#### Just to see the conclusion or gist of this project, head over to [conclusions](./conclusion.md)
+#### Just to see the conclusion or gist of this project, head over to [conclusions](Conclusion.md)
