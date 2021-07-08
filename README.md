@@ -10,13 +10,13 @@ It is very beginner friendly and can easily be implemented in firebase without k
 4. Arduino IDE - arduino.cc
 5. Some LEDs, resistors, sensors and other components as per requirement, to test this project.
 ## The following are the steps to get started:
- ├── Clone this repository <br>
- ├──Host the `index.html` inside the `Webpage` folder, on firebase hosting<br>
- ├──Create a Realtime Database on Firebase<br>
- ├── Head over to the `Firebase-basic-iot` folder <br>
- ├── Open the `Firebase-basic-iot.ino` file with Arduino <br>
- ├── Set the board as generic ESP8266 <br>
- └── Upload <br>
+ → Clone this repository <br>
+ → Host the `index.html` inside the `Webpage` folder, on firebase hosting<br>
+ → Create a Realtime Database on Firebase<br>
+ → Head over to the `Firebase-basic-iot` folder <br>
+ → Open the `Firebase-basic-iot.ino` file with Arduino <br>
+ → Set the board as generic ESP8266 <br>
+ → Upload <br>
 
 ## Firebase Integration:
 * We are using Firebase Realtime Database and Firebase Hosting services, those are available under the spark plan with certain limitations, but it won't be an issue for our purpose. <br>
