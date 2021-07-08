@@ -60,4 +60,4 @@ Type the URL from your Firebase Hosting page, if you did everything properly, yo
 ![image](https://user-images.githubusercontent.com/55695557/116693694-e7fd4800-a9db-11eb-90ce-ed2155b34553.png)
 * You have successfully hosted an webpage on firebase to control your IoT device using Firebase RTDB.
 
-#### Just to see the conclusion or gist of this project, head over to [conclusions](Conclusion.md)
+#### Just to see the gist or summary of this project, head over to [summary](Summary.md)
